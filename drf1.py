@@ -20,8 +20,8 @@ def pizza_info(brand, *pizzas, **pizza_toppings):
 pizza_info("도미노", "페퍼로니", "하와이안", "치즈", 페퍼로니="페퍼로니", 하와이안="파인애플", 치즈="치즈")
 #2 mutable , imutable 의 특성과 어떤 자료형이 어느것에 해당하는지 서술
 
-# mutable : 한국어로 변할 수 있다. 즉 객체를 메모리의 주소로 생각을 하여 변수를 객체로 지정해서 변수에 추가하거나 했을때 같은 주소로 인식을 해서 객체도 같이 변한다. 종류 - List, Dict
-# immutable : 불변 , 즉 객체를 지정하면 변하지 않는 것 종류 - int(숫자), str(문자), tuple, bool(참거짓), float(실수)
+# mutable : 변할 수 있는 값. 즉 객체의 값을 메모리의 주소에 저장을 하여 변수를 객체로 지정해서 변수에 추가하거나 했을때 같은 주소로 저장을 해서 객체도 같이 변한다. 종류 - List, Dict, Set
+# immutable : 불변값 , 즉 객체를 지정하면 변하지 않는 것 종류 - int(숫자), str(문자), tuple, bool(참거짓), float(실수)
 
 mutable = [1, 2, 3]
 immutable = 4
