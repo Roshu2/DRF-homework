@@ -11,11 +11,18 @@ class UserView(APIView):
      #사용자 정보 조회
     def get(self, request):
         user = request.user
-        article = ArticleModel.objects.get(user_id=user.id)
-        print(article.title)
+        articles = ArticleModel.objects.filter(user_id=user.id).values()
         
-        return Response({"title": article.title})
+        title_list = []
+        for article in articles:
+            title = article['title']
+            title_list.append(title)
+        
+        title_list = ", ".join(title_list)
+        
+        return Response({"title": title_list})
     
+    #회원 가입
     def post(self, request):
         
         return Response({"message": "회원가입 성공!!"})
