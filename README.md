@@ -1,6 +1,12 @@
-# DRFhomework
+# 😄DRFhomework
+<a href="https://www.python.org" target="_blank" rel="noreferrer"> 
+   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> 
+</a> 
+<a href="https://www.djangoproject.com/" target="_blank" rel="noreferrer"> 
+   <img src="https://images.velog.io/images/holawan/post/a6998da8-f1f8-4256-94cc-fcb77b2f08b7/django.png" alt="django" width="40" height="40"/> 
+</a> 
 
-## 1일차 과제  
+## 📜1일차 과제  
 과제
  1. args, kwargs를 사용하는 예제 코드 짜보기
  2. mutable과 immutable은 어떤 특성이 있고, 어떤 자료형이 어디에 해당하는지 서술하기
@@ -11,7 +17,7 @@
 drf1.py
 <br><br>
 
-## 2일차 과제  
+## 📒2일차 과제  
 과제<br>
 
 1. Django 프로젝트를 생성하고, user 라는 앱을 만들어서 settings.py 에 등록해보세요.
