@@ -10,17 +10,8 @@ class UserView(APIView):
     
      #사용자 정보 조회
     def get(self, request):
-        user = request.user
-        articles = ArticleModel.objects.filter(user_id=user.id).values()
         
-        title_list = []
-        for article in articles:
-            title = article['title']
-            title_list.append(title)
-        
-        title_list = ", ".join(title_list)
-        
-        return Response({"title": title_list})
+        return Response({"message": "회원정보 GET!"})
     
     #회원 가입
     def post(self, request):
