@@ -32,12 +32,12 @@ class User(AbstractBaseUser):
     
     
     #is_active False일 경우 계정 비활성화
-    is_active: models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
     
     #is_staff 에서 해당 값 사용
-    is_admin: models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
     
-    #id로 사용할 필드 지정
+    #id로 사용할 필드 지정 custom User 모델 사용시 필수적으로 설정해야됨.
     #로그인 시 USERNAME_FIELD에 설정된 필드와 password가 사용됨
     USERNAME_FIELD = 'username'
     
@@ -64,9 +64,26 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self): 
         return self.is_admin
-    
-    
 
+
+class Hobby(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+    
+    
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, verbose_name="유저", on_delete=models.CASCADE)
+    introduction = models.TextField("자기소개", max_length=255)
+    birthday = models.DateTimeField("생일")
+    age = models.IntegerField("나이")
+    hobby = models.ManyToManyField(Hobby, verbose_name="취미")
+    
+    
+    def __str__(self):
+        return f"{self.user.username} 님의 프로필입니다."
+    
     
     
     
