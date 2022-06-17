@@ -1,17 +1,19 @@
 from django.contrib.auth import login, logout, authenticate
 from rest_framework.views import APIView
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from blog.models import Article as ArticleModel
+from user.serializers import UserSerializer
+from ai.permissions import RegistedMoreThanThreeDaysUser
 
 
 class UserView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [RegistedMoreThanThreeDaysUser]
     
      #사용자 정보 조회
     def get(self, request):
-        
-        return Response({"message": "회원정보 GET!"})
+        user = request.user
+        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
     
     #회원 가입
     def post(self, request):

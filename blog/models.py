@@ -19,4 +19,13 @@ class Article(models.Model):
     content = models.TextField(max_length=255)
     
     def __str__(self):
-        return f"{self.user.username} 님의 게시글입니다."
+        return f"{self.user.username} 님의 {self.title}게시글입니다."
+    
+class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    comment = models.CharField("댓글", max_length=256)
+    
+    def __str__(self):
+        return f"{self.article.user} 님의 게시글 {self.user.username} 님의 댓글"
+    
