@@ -9,7 +9,7 @@ from datetime import timedelta
 from django.utils import timezone
 
 class ArticleView(APIView):
-    permission_classes = [IsAdminOrIsAuthenticatedReadOnly, RegistedMoreThanWeekUser]
+    permission_classes = [IsAdminOrIsAuthenticatedReadOnly]
     #로그인한 사용자 게시글 제목
     def get(self, request):
         user = request.user
