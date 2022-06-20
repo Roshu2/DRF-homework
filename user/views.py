@@ -4,16 +4,16 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from blog.models import Article as ArticleModel
 from user.serializers import UserSerializer
-from ai.permissions import RegistedMoreThanThreeDaysUser
+from ai.permissions import RegistedMoreThanWeekUser, IsAdminOrIsAuthenticatedReadOnly
 
 
 class UserView(APIView):
-    permission_classes = [RegistedMoreThanThreeDaysUser]
+    permission_classes = [IsAdminOrIsAuthenticatedReadOnly]
     
      #사용자 정보 조회
     def get(self, request):
-        user = request.user
-        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+        user_serializer = UserSerializer(request.user, context={"request": request}).data
+        return Response(user_serializer, status=status.HTTP_200_OK)
     
     #회원 가입
     def post(self, request):

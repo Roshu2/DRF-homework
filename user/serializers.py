@@ -19,11 +19,9 @@ class HobbySerializer(serializers.ModelSerializer):
     same_hobby_users = serializers.SerializerMethodField()
     
     def get_same_hobby_users(self, obj):
-        user_list = []
-        for user_profile in obj.userprofile_set.all():
-            user_list.append(user_profile.user.username)
-
-        return user_list
+        user = self.context["request"].user
+        
+        return [up.user.username for up in obj.userprofile_set.exclude(user=user)]
 
     class Meta:
         model = HobbyModel
@@ -40,8 +38,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         
 class UserSerializer(serializers.ModelSerializer):  
     userprofile = UserProfileSerializer()
-    article_set = ArticleSerializer(many=True)
+    articles = ArticleSerializer(many=True, source="article_set")
+    login_user_username = serializers.SerializerMethodField()
+    
+    def get_login_user_username(self, obj):
+        return self.context["request"].user.username
     
     class Meta:
         model = UserModel
-        fields = ["username", "email", "fullname", "userprofile", "article_set"]
+        fields = ["username", "email", "fullname", "userprofile", "articles", "login_user_username"]
