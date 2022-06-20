@@ -17,8 +17,8 @@ class Article(models.Model):
     title = models.CharField(max_length=70)
     category = models.ManyToManyField(Category, related_name="articles")
     content = models.TextField(max_length=255)
-    show_article = models.DateTimeField(default=timezone.now() + timedelta(days=3))
-    end_article = models.DateTimeField(default=timezone.now() + timedelta(days=10))
+    show_article = models.DateTimeField(default=timezone.now)
+    end_article = models.DateTimeField(default=timezone.now() + timedelta(days=7))
     
     def __str__(self):
         return f"{self.user.username} 님의 {self.title}게시글입니다."

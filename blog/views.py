@@ -14,8 +14,8 @@ class ArticleView(APIView):
     def get(self, request):
         user = request.user
         articles = ArticleModel.objects.filter(
-            end_article__lte=timezone.now() + timedelta(days=10), 
-            show_article__gte=timezone.now() - timedelta(days=3)).order_by("-show_article").values()
+            end_article__gte=timezone.now(), 
+            show_article__lte=timezone.now()).order_by("-show_article").values()
         
         my_articles = [article for article in articles] #for문 축약
         # titles = ", ".join(titles) # 콤마로 리스트를 분리 ["1","2"] > "1,2"
