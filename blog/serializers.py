@@ -43,8 +43,6 @@ class ArticleSerializer(serializers.ModelSerializer):
     def validate(self, data):
         categories = data.get("get_categories", [])
         
-        print(categories)
-        
         if len(data.get("title", "")) < 5 :
             raise serializers.ValidationError(
                 detail={"error": "제목은 5글자 이상 적어주세요."}
@@ -58,12 +56,17 @@ class ArticleSerializer(serializers.ModelSerializer):
                 detail={"error": "카테고리를 선택 해주세요."}
             )
         for category_id in categories:
-            try:
-                CategoryModel.objects.get(id=category_id)
-            except CategoryModel.DoesNotExist:
+            if not CategoryModel.objects.filter(id=category_id).exists():
                 raise serializers.ValidationError(
                 detail={"error": "카테고리를 잘못 지정했습니다."}
             )
+            # category의 존재 유무 try except 코드    
+            # try:
+            #     CategoryModel.objects.get(id=category_id)
+            # except:
+            #     raise serializers.ValidationError(
+            #     detail={"error": "카테고리를 잘못 지정했습니다."}
+            # )
     
         return data
     
