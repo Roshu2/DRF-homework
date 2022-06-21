@@ -38,14 +38,13 @@ class CommentSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):  
     category = CategorySerializer(many=True, read_only=True)
     get_categories = serializers.ListField(required=False) # 프론트에서 list로 데이터 보내줄때 사용
-    # category = serializers.SerializerMethodField(many=True)
     comments = CommentSerializer(many=True, source="comment_set", read_only=True)
     
-    # def get_category(self, obj):
-        
-    #     return [category.name for category in obj.category.all()]
-    
     def validate(self, data):
+        categories = data.get("get_categories", [])
+        
+        print(categories)
+        
         if len(data.get("title", "")) < 5 :
             raise serializers.ValidationError(
                 detail={"error": "제목은 5글자 이상 적어주세요."}
@@ -54,10 +53,18 @@ class ArticleSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 detail={"error": "내용은 20자 이상 적어주세요."}
             )
-        if not data.get("get_categories", []):
+        if not categories:
             raise serializers.ValidationError(
                 detail={"error": "카테고리를 선택 해주세요."}
             )
+        for category_id in categories:
+            try:
+                CategoryModel.objects.get(id=category_id)
+            except CategoryModel.DoesNotExist:
+                raise serializers.ValidationError(
+                detail={"error": "카테고리를 잘못 지정했습니다."}
+            )
+    
         return data
     
     def create(self, validated_data):
