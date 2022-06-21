@@ -3,5 +3,6 @@ from blog import views
 
 urlpatterns = [
     #blog/
-    path('', views.ArticleView.as_view()),
+    path('article/', views.ArticleView.as_view()),
+    path('article/<obj_id>/', views.ArticleView.as_view()),
 ]

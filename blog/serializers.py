@@ -21,7 +21,7 @@ class CategorySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CategoryModel
-        fields = ["name"]
+        fields = ["name", "id"]
         
         
 class CommentSerializer(serializers.ModelSerializer):  
@@ -36,38 +36,52 @@ class CommentSerializer(serializers.ModelSerializer):
    
         
 class ArticleSerializer(serializers.ModelSerializer):  
-    category = serializers.SerializerMethodField()
-    comments = CommentSerializer(many=True, source="comment_set")
-    user = serializers.SerializerMethodField()
+    category = CategorySerializer(many=True, read_only=True)
+    get_categories = serializers.ListField(required=False) # 프론트에서 list로 데이터 보내줄때 사용
+    # category = serializers.SerializerMethodField(many=True)
+    comments = CommentSerializer(many=True, source="comment_set", read_only=True)
     
-    def get_user(self, obj):
-        return obj.user.username
+    # def get_category(self, obj):
+        
+    #     return [category.name for category in obj.category.all()]
     
-    def get_category(self, obj):
-        return [category.name for category in obj.category.all()]
+    def validate(self, data):
+        if len(data.get("title", "")) < 5 :
+            raise serializers.ValidationError(
+                detail={"error": "제목은 5글자 이상 적어주세요."}
+            )
+        if len(data.get("content", "")) < 20 :
+            raise serializers.ValidationError(
+                detail={"error": "내용은 20자 이상 적어주세요."}
+            )
+        if not data.get("get_categories", []):
+            raise serializers.ValidationError(
+                detail={"error": "카테고리를 선택 해주세요."}
+            )
+        return data
     
+    def create(self, validated_data):
+        #mixed in, generic class? create의 구조가 바뀌는것 참고!
+        
+        get_categorys = validated_data.pop("get_categories")
+        
+        article = ArticleModel(**validated_data)
+        article.save()
+        article.category.add(*get_categorys)
+        
+        return article
+    
+    def update(self, instance, validated_data):
+        get_categorys = validated_data.pop("get_categories")
+        
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        instance.category.set(get_categorys)
+        return instance
     
     class Meta:
         model = ArticleModel
-        fields = ["category", "title", "content", "comments", "user"]
-        
+        fields = ["category", "title", "content", "comments", "user", "get_categories"]
 
-# class PostArticleSerializer(serializers.ModelSerializer):
-#     title = serializers.CharField(max_length=70, min_length=5, default='')
-#     category = serializers.CharField(max_length=100)
-#     content = serializers.CharField(max_length=256, min_length=20, default='')
-    
-#     def create(self, validated_data):
-#         return ArticleModel.objects.create(**validated_data)
-    
-#     def update(self, instance, validated_data):
-#         instance.title = validated_data.get('title', instance.title)
-#         instance.category = validated_data.get('category', instance.category)
-#         instance.content = validated_data.get('content', instance.content)
-#         instance.save()
-#         return instance
-    
-    
-#     class Meta:
-#         model = ArticleModel
-#         fields = ["category", "title", "content"]
+        
