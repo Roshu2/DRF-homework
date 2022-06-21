@@ -24,8 +24,8 @@ class ProductView(APIView):
     
     #상품 등록
     def post(self, request):
-        seller = request.user
-        request.data['seller'] = seller.id
+        user = request.user
+        request.data['seller'] = user.id
         product_serializer = ProductSerializer(data=request.data, context={"request": request})
         
         if product_serializer.is_valid():

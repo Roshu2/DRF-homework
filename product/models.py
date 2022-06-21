@@ -8,7 +8,7 @@ from datetime import timedelta
 class Product(models.Model):
     seller = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     title = models.CharField("제목", max_length=70)
-    thumbnail = models.ImageField("썸네일")
+    thumbnail = models.ImageField("썸네일", upload_to='product/')
     description = models.TextField("설명", max_length=255, blank=True, null=True)
     created_date = models.DateField("작성일", auto_now_add=True)
     exposure_start = models.DateTimeField("노출 시작일", default=timezone.now)
