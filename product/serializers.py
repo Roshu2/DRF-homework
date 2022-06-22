@@ -32,7 +32,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_review(self, obj):
         reviews = list(obj.review_set.values())
         if len(reviews) == 0:
-            return "리뷰엄슴"
+            return "리뷰 없음"
         return reviews[-1]["content"]
         
         
