@@ -1,3 +1,4 @@
+from asyncore import read
 from importlib.resources import read_binary
 from rest_framework import serializers
 
@@ -19,13 +20,21 @@ from django.utils import timezone
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    
+    def get_username(self, obj):
+        # user_list = [user.username for user in obj.author]
+        # # last_user = user_list.append(obj.author.username)
+        # print(user_list)
+        return 
+    
     class Meta:
         model = ReviewModel
-        fields = ["author", "content", "rating"]
+        fields = ["username"]
 
 class ProductSerializer(serializers.ModelSerializer):
     review = serializers.SerializerMethodField()
-    
+    review_author = ReviewSerializer(read_only=True, source="review_set", many=True)
     is_active = serializers.BooleanField(default=True)
     
     #최신 리뷰 1개만 불러오기
@@ -33,7 +42,7 @@ class ProductSerializer(serializers.ModelSerializer):
         reviews = list(obj.review_set.values())
         if len(reviews) == 0:
             return "리뷰 없음"
-        return reviews[-1]["content"]
+        return reviews[-1]
         
         
     
@@ -74,13 +83,24 @@ class ProductSerializer(serializers.ModelSerializer):
         
         for key, value in validated_data.items():
             setattr(instance, key, value)
-        instance.save()
-        instance.description = f"<{instance.updated_at} 에 수정됨> "+ instance.description
-        instance.save()
+         
         
+        if instance.updated_at == instance.created_date:
+            instance.description = f"<{instance.updated_at} 에 수정됨> \n {instance.description}"
+            instance.save()
+        else:
+            split_desc_list = instance.description.split("\\n")
+            split_desc ="\n".join(split_desc_list[1:])
+            updated_desc = f"<{instance.updated_at} 에 수정됨>\n{split_desc}"
+            
+            instance.description = updated_desc
+            instance.save()
         return instance
+            
+            
+            
     
     class Meta:
         model = ProductModel
         fields = ["seller", "title", "thumbnail", "description", 
-                  "price", "average_review", "review", "is_active", "exposure_end", "exposure_start"]
+                  "price", "average_review","review_author", "review", "is_active", "exposure_end", "exposure_start", "created_date", "updated_at"]
