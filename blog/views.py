@@ -62,6 +62,7 @@ class ArticleView(APIView):
         article_serializer = ArticleSerializer(article, data=request.data, partial=True, context={"request": request}) #partial 을 쓰면 일부의 데이터만 넣을 수 있다.
         article_serializer.is_valid()
         article_serializer.save()
+        
         return Response(article_serializer.data, status=status.HTTP_200_OK)
         
 

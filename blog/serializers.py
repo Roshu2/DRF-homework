@@ -38,8 +38,8 @@ class CommentSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):  
     category = CategorySerializer(many=True, read_only=True)
     get_categories = serializers.ListField(required=False) # 프론트에서 list로 데이터 보내줄때 사용
-    comments = CommentSerializer(many=True, source="comment_set", read_only=True)
-    
+    comments = CommentSerializer(many=True, source="comment_set", read_only=True)    
+
     def validate(self, data):
         categories = data.get("get_categories", [])
         
@@ -63,7 +63,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             # category의 존재 유무 try except 코드    
             # try:
             #     CategoryModel.objects.get(id=category_id)
-            # except:
+            # except CategoryModel.DoesNotExist:
             #     raise serializers.ValidationError(
             #     detail={"error": "카테고리를 잘못 지정했습니다."}
             # )
@@ -72,7 +72,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         #mixed in, generic class? create의 구조가 바뀌는것 참고!
-        
+        print(validated_data)
         get_categorys = validated_data.pop("get_categories")
         
         article = ArticleModel(**validated_data)

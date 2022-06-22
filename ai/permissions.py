@@ -47,3 +47,34 @@ class IsAdminOrIsAuthenticatedReadOnly(BasePermission):
             return True
 
         return False
+    
+   
+class IsAdminOrRegistedThreeDaysUserOrReadOnly(BasePermission):
+    """
+    admin 사용자, 혹은 가입 후 3일이 지난 사용자는 모든 request 가능,
+    비로그인 사용자는 조회만 가능
+    """
+
+    SAFE_METHODS = ('GET', )
+    message = '접근 권한이 없습니다.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        
+        if request.method in self.SAFE_METHODS:
+            return True
+        if not user.is_authenticated:
+            response = {
+                'detail': "서비스를 이용하기 위해 로그인 해주세요."
+            }
+            raise GenericAPIException(status_code=status.HTTP_401_UNAUTHORIZED, detail=response)
+        
+        join_date = request.user.join_date
+        now =  timezone.now()
+
+        three_days_passed = bool(now - join_date >= timedelta(days=3))
+        
+        if (user.is_authenticated and user.is_admin) or three_days_passed:
+            return True
+
+        return False

@@ -6,21 +6,30 @@ from product.models import Product as ProductModel
 from product.serializers import ProductSerializer
 from django.db.models import Q
 from django.utils import timezone
-
+from ai.permissions import IsAdminOrRegistedThreeDaysUserOrReadOnly
+from rest_framework.permissions import AllowAny
 class ProductView(APIView):
-    # permission_classes = [IsAdminOrIsAuthenticatedReadOnly]
+    permission_classes = [IsAdminOrRegistedThreeDaysUserOrReadOnly]
     
     #상품 조회
     def get(self, request):
         user = request.user
-        products = ProductModel.objects.filter(
-            Q(exposure_end__gte=timezone.now(), 
-            exposure_start__lte=timezone.now()) | Q(seller=user)
-            )
-        
-        product_serializer = ProductSerializer(products, many=True).data
-        
+        if user.is_authenticated:
+            products = ProductModel.objects.filter(
+                Q(exposure_end__gte=timezone.now(), 
+                is_active=True) | Q(seller=user)
+                )
+            
+            product_serializer = ProductSerializer(products, many=True).data
+        else:
+            products = ProductModel.objects.filter(
+                Q(exposure_end__gte=timezone.now(), 
+                is_active=True)
+                )
+            product_serializer = ProductSerializer(products, many=True).data   
+            
         return Response(product_serializer, status=status.HTTP_200_OK)
+        
     
     #상품 등록
     def post(self, request):
