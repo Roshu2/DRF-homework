@@ -6,10 +6,10 @@ from product.models import Product as ProductModel
 from product.serializers import ProductSerializer
 from django.db.models import Q
 from django.utils import timezone
-from ai.permissions import IsAdminOrRegistedThreeDaysUserOrReadOnly
+from ai.permissions import IsAdminOrThreeDaysPassedrOrReadOnly
 from rest_framework.permissions import AllowAny
 class ProductView(APIView):
-    permission_classes = [IsAdminOrRegistedThreeDaysUserOrReadOnly]
+    permission_classes = [IsAdminOrThreeDaysPassedrOrReadOnly]
     
     #상품 조회
     def get(self, request):

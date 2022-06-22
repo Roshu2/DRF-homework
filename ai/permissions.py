@@ -49,7 +49,7 @@ class IsAdminOrIsAuthenticatedReadOnly(BasePermission):
         return False
     
    
-class IsAdminOrRegistedThreeDaysUserOrReadOnly(BasePermission):
+class IsAdminOrThreeDaysPassedrOrReadOnly(BasePermission):
     """
     admin 사용자, 혹은 가입 후 3일이 지난 사용자는 모든 request 가능,
     비로그인 사용자는 조회만 가능
